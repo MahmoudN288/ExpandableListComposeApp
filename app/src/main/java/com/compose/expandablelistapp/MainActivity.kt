@@ -74,7 +74,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupedItems() {
-    val expandedState = remember(list) { list.map { false }.toMutableStateList() }
+    val collapseState = remember(list) { list.map { false }.toMutableStateList() }
     val groupedList = list.groupBy { itemA-> itemA.listOf.groupBy { itemB-> itemB.group } }
     LazyColumn(
         modifier = Modifier.fillMaxWidth()
@@ -82,7 +82,7 @@ fun GroupedItems() {
         item { /*Add any other compose as a header*/ }
         groupedList.values.forEachIndexed { indexA, listOfListOfObjects ->
             listOfListOfObjects.forEachIndexed { indexB, listOfObjects->
-                val expanded = expandedState[indexA]
+                val collapsed = collapseState[indexA]
                 item { Spacer(modifier = Modifier
                     .fillMaxWidth()
                     .height(10.dp))
@@ -99,13 +99,13 @@ fun GroupedItems() {
                             ),
                         shape = RoundedCornerShape(1.dp),
                         onClick = {
-                            expandedState[indexA] = !expanded
+                            collapseState[indexA] = !collapsed
                         }
                     ) {
                         Row(
                             modifier = Modifier
                                 .clickable {
-                                    expandedState[indexA] = !expanded
+                                    collapseState[indexA] = !collapsed
                                 }
                                 .shadow(
                                     elevation = 1.dp,
@@ -137,7 +137,7 @@ fun GroupedItems() {
                                     .alpha(ContentAlpha.medium)
                                     .rotate(rotationState),
                                 onClick = {
-                                    expandedState[indexA] = !expanded
+                                    collapseState[indexA] = !collapsed
                                 }) {
                                 Icon(
                                     imageVector = Icons.Default.KeyboardArrowUp,
@@ -147,7 +147,7 @@ fun GroupedItems() {
                         }
                     }
                 }
-                if (!expanded) {
+                if (!collapsed) {
                     items(listOfObjects.listOf.size) {
                         RowItem(obj = listOfObjects.listOf[it])
                     }
